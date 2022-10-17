@@ -1,14 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
-	"os"
-	"strconv"
 )
-
-var params = []string{"Typecar", "Model", "Year", "Engine"}
 
 type Car struct {
 	Typecar string
@@ -17,30 +13,13 @@ type Car struct {
 	Engine  float64
 }
 
-func newCar() *Car {
-	scanner := bufio.NewScanner(os.Stdin)
-	c := &Car{}
-	for _, v := range params {
-		fmt.Print("Enter the ", v, " of your car: ")
-		scanner.Scan()
-		switch v {
-		case "Typecar":
-			c.Typecar = scanner.Text()
-		case "Model":
-			c.Model = scanner.Text()
-		case "Year":
-			c.Year, _ = strconv.Atoi(scanner.Text())
-		case "Engine":
-			c.Engine, _ = strconv.ParseFloat(scanner.Text(), 64)
-		default:
-			continue
-		}
-	}
-	return c
-}
-
 func main() {
-	c := newCar()
+	var t = flag.String("typecar", "Roadster", "type of your car")
+	var m = flag.String("model", "Chevy", "model of your car")
+	var y = flag.Int("year", 2019, "year of your car")
+	var e = flag.Float64("engine", 1998.7, "V engine")
+	flag.Parse()
+	c := &Car{*t, *m, *y, *e}
 	fmt.Println("Your car is: ")
 	jsoncar, _ := json.MarshalIndent(c, "", "  ")
 	fmt.Print(string(jsoncar))
